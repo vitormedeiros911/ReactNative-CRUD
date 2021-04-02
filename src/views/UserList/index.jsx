@@ -1,23 +1,28 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Alert, FlatList, View } from "react-native";
-import { Avatar, Button, ListItem } from "react-native-elements";
+import { Avatar, ListItem } from "react-native-elements";
 
-import users from "../../data/users";
+import UsersContext from "../../context/UsersContext";
 
 export default ({ navigation }) => {
+  const { state, dispatch } = useContext(UsersContext);
 
   function confirmUserDelete(user) {
-    Alert.alert('Excluir Usuário', 'Deseja excluir o usuário?', [
+    Alert.alert("Excluir Usuário", "Deseja excluir o usuário?", [
       {
-        text: 'Sim',
+        text: "Sim",
         onPress() {
-          console.warn('delete')
-        }
+          dispatch({
+            type: "deleteUser",
+            //*passar o id como payload também é uma opção
+            payload: user,
+          });
+        },
       },
       {
-        text: 'Não'
-      }
-    ])
+        text: "Não",
+      },
+    ]);
   }
 
   function getUserItem({ item: user }) {
@@ -52,8 +57,8 @@ export default ({ navigation }) => {
   return (
     <View>
       <FlatList
-        keyExtractor={(user) => user.id.toString()}
-        data={users}
+        keyExtractor={(user) => String(user.id)}
+        data={state.users}
         renderItem={getUserItem}
       />
     </View>
